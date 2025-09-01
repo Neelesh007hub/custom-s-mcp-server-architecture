@@ -4,7 +4,7 @@ A secure, cloud-based Model Context Protocol (MCP) server that enables intellige
 
 ## 🌐 Live Demo Architecture
 
-🎯 **[View Live Presentation](https://nlgupta-systango.github.io/sys-mcp-server-architecture/)**
+🎯 **[View Live Presentation](https://neelesh007hub.github.io/custom-s-mcp-server-architecture/)**
 
 ## 🎯 About This MCP Server
 
@@ -17,4 +17,4 @@ This enterprise-grade MCP server provides:
 - **🏗️ Cloud Native**: Deployed on Render.com with 7 specialized MCP tools
 
 
-**🌐 [View Live Presentation of Architecture](https://nlgupta-systango.github.io/sys-mcp-server-architecture/) | 🚀 Experience the future of data querying!**
+**🌐 [View Live Presentation of Architecture](https://neelesh007hub.github.io/custom-s-mcp-server-architecture/) | 🚀 Experience the future of data querying!**
