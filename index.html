@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise MCP Server - S3 Data Query Solution</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .slide h3 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin: 25px 0 15px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .value-prop {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .value-prop:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-prop h4 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .value-prop p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .architecture-diagram {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .arch-layer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .arch-component {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .arch-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .arch-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .arch-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #3498db;
+            margin: 0 20px;
+        }
+
+        .workflow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .workflow-step h4 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .workflow-step p {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .workflow-arrow {
+            font-size: 2em;
+            color: #3498db;
+            margin: 0 15px;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .benefit-card {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .benefit-card h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .benefit-card p {
+            color: #155724;
+            font-size: 0.9em;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #ffc107;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #856404;
+            font-weight: 500;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .code-example {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-example .highlight {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .query-result-table {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .query-result-table pre {
+            margin: 0;
+            white-space: pre;
+            color: #ecf0f1;
+        }
+
+        .highlight {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .next-steps {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .next-steps h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+        }
+
+        .next-steps ul {
+            color: #1565c0;
+            padding-left: 20px;
+        }
+
+        .next-steps li {
+            margin: 8px 0;
+        }
+
+                 /* Sequence Diagram Styles */
+         .sequence-diagram {
+             background: #2c3e50;
+             border-radius: 12px;
+             padding: 30px;
+             margin: 25px 0;
+             color: white;
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         }
+
+        /* Architecture Image Styles */
+        .architecture-image-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .architecture-image {
+            width: 100%;
+            max-width: 1200px;
+            min-width: 800px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .architecture-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Make image clickable for full-screen view */
+        .architecture-image:active {
+            transform: scale(0.98);
+        }
+
+        /* Image Modal Styles */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+
+        .modal-image {
+            display: block;
+            margin: auto;
+            max-width: 95%;
+            max-height: 95%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        .modal-close:hover {
+            color: #cccccc;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+            
+            .workflow {
+                flex-direction: column;
+            }
+            
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Enterprise MCP Server</h1>
+            <p>Intelligent S3 Data Query Solution for Business Analytics</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showSlide(1)">Overview</button>
+            <button class="nav-btn" onclick="showSlide(2)">Architecture</button>
+            <button class="nav-btn" onclick="showSlide(3)">Workflow</button>
+            <button class="nav-btn" onclick="showSlide(4)">Technical Flow</button>
+            <button class="nav-btn" onclick="showSlide(5)">Demo</button>
+        </div>
+
+        <!-- Slide 1: Overview -->
+        <div class="slide active" id="slide1">
+            <h2>📊 Project Overview</h2>
+            
+            <h3>What We Built</h3>
+            <p>A secure, cloud-based Model Context Protocol (MCP) server that enables intelligent querying of S3 data warehouses using natural language. This solution transforms complex data analysis into simple conversations.</p>
+
+            <div class="value-props">
+                <div class="value-prop">
+                    <h4>🔍 Intelligent Discovery</h4>
+                    <p>Automatically scans and catalogs all data files in your S3 bucket, making them instantly queryable through natural language.</p>
+                </div>
+                <div class="value-prop">
+                    <h4>⚡ Lightning Fast</h4>
+                    <p>In-memory processing with DuckDB delivers sub-second query results, even for complex analytics across multiple files.</p>
+                </div>
+                <div class="value-prop">
+                    <h4>🛡️ Enterprise Security</h4>
+                    <p>API key authentication, HTTPS encryption, and secure AWS credential management ensure your data stays protected.</p>
+                </div>
+                <div class="value-prop">
+                    <h4>🎯 Business Focused</h4>
+                    <p>Pre-built data models and business rules help users get meaningful insights without technical expertise.</p>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Intelligent Tools</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">File Types Supported</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">< 1s</div>
+                    <div class="stat-label">Query Response Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Secure & Compliant</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Architecture -->
+        <div class="slide" id="slide2">
+            <h2>🏗️ System Architecture</h2>
+            
+            <h3>Modern Cloud-Native Design</h3>
+            <p>Built on industry-standard technologies with enterprise-grade security and scalability.</p>
+
+            <!-- Architecture Diagram -->
+            <div class="architecture-image-container">
+                <img src="ar_diagram_new.png" alt="System Architecture Diagram" class="architecture-image" onclick="openImageModal(this)">
+                <p style="margin-top: 15px; color: #6c757d; font-size: 0.9em; font-style: italic;">
+                    💡 Click on the diagram to view in full screen
+                </p>
+            </div>
+
+            <!-- Image Modal for Full Screen View -->
+            <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+                <span class="modal-close">&times;</span>
+                <img class="modal-image" id="modalImg">
+            </div>
+
+            <h3>Key Components</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>🔐 Security Layer</h4>
+                    <p>API key authentication, HTTPS encryption, and secure credential management</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📈 Data Engine</h4>
+                    <p>High-performance DuckDB for in-memory analytics and Polars for data processing</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🔄 Smart Caching</h4>
+                    <p>Intelligent caching of schemas and metadata for faster repeated queries</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🌍 Cloud Native</h4>
+                    <p>Deployed on Render.com with automatic scaling and 99.9% uptime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Workflow -->
+        <div class="slide" id="slide3">
+            <h2>🔄 How It Works</h2>
+            
+            <h3>Simple 4-Step Process</h3>
+            <p>From data discovery to actionable insights in minutes, not hours.</p>
+
+            <div class="workflow">
+                <div class="workflow-step">
+                    <h4>1</h4>
+                    <p>Discover</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>2</h4>
+                    <p>Analyze</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>3</h4>
+                    <p>Query</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>4</h4>
+                    <p>Insights</p>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Real-World Example</h3>
+                <p><strong>Business Question:</strong> "Show me our top 10 clients by revenue for the last quarter"</p>
+                
+                <div class="code-example"><span class="highlight">User:</span> "Show me our top 10 clients by revenue for the last quarter"
+
+<span class="highlight">System Process:</span>
+1. <span class="highlight">Discovers</span> all invoice and client data files
+2. <span class="highlight">Analyzes</span> schemas and loads data into memory  
+3. <span class="highlight">Executes</span> optimized SQL query automatically
+4. <span class="highlight">Returns</span> formatted results with insights
+
+<span class="highlight">Result:</span> Clean table showing top 10 clients with revenue figures</div>
+            </div>
+
+            <h3>Intelligent Features</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>🤖 Auto-Discovery</h4>
+                    <p>Automatically finds and catalogs all data files in your S3 bucket</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🧠 Smart Schema</h4>
+                    <p>Intelligent data type detection and schema analysis</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>⚡ Fast Queries</h4>
+                    <p>In-memory processing delivers instant results</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📋 Clean Output</h4>
+                    <p>Formatted, business-ready results and insights</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technical Flow -->
+        <div class="slide" id="slide4">
+            <h2>🔧 Technical Flow</h2>
+            
+            <h3>Behind the Scenes: How It Works</h3>
+            <p>See the detailed technical process of how a simple user request flows through our secure system to deliver instant results.</p>
+
+                         <div class="sequence-diagram">
+                 <h3 style="text-align: center; margin-bottom: 30px; color: #ecf0f1;">📁 List Available Files Flow</h3>
+                 
+                 <div style="text-align: center; margin: 30px 0;">
+                     <img src="diagram.png" alt="List Available Files Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                 </div>
+                 
+                 <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin: 20px 0;">
+                     <h4 style="color: #ecf0f1; margin-bottom: 15px;">🔍 Flow Summary:</h4>
+                     <ol style="color: #ecf0f1; line-height: 1.8; padding-left: 20px;">
+                         <li><strong>User Request:</strong> "Show me available files"</li>
+                         <li><strong>Client Processing:</strong> Cursor AI sends secure HTTP request with API key</li>
+                         <li><strong>Server Authentication:</strong> MCP Server verifies API key and processes request</li>
+                         <li><strong>S3 Query:</strong> Server queries AWS S3 for file list</li>
+                         <li><strong>Data Processing:</strong> Server creates table names and caches metadata</li>
+                         <li><strong>Results Return:</strong> Formatted file list sent back to user</li>
+                     </ol>
+                 </div>
+             </div>
+
+             <div class="sequence-diagram" style="margin-top: 40px;">
+                 <h3 style="text-align: center; margin-bottom: 30px; color: #ecf0f1;">⚡ Query Execution Flow</h3>
+                 
+                                   <div style="text-align: center; margin: 30px 0;">
+                      <img src="query_diagram.png" alt="Query Execution Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                  </div>
+                 
+                 <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin: 20px 0;">
+                     <h4 style="color: #ecf0f1; margin-bottom: 15px;">⚡ Query Execution Summary:</h4>
+                     <ol style="color: #ecf0f1; line-height: 1.8; padding-left: 20px;">
+                         <li><strong>User Query:</strong> "Show me top 5 clients by revenue"</li>
+                         <li><strong>Query Processing:</strong> Server converts to SQL and translates file names</li>
+                         <li><strong>Database Execution:</strong> DuckDB runs query against in-memory data</li>
+                         <li><strong>Results Formatting:</strong> Server formats results as clean table</li>
+                         <li><strong>Display:</strong> User sees formatted results instantly</li>
+                     </ol>
+                 </div>
+             </div>
+
+            <h3>Key Technical Features</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>🔐 Secure Authentication</h4>
+                    <p>API key verification ensures only authorized access to your data</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>⚡ Fast S3 Integration</h4>
+                    <p>Direct AWS S3 API calls for instant file discovery</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>💾 Smart Caching</h4>
+                    <p>Local file caching reduces repeated S3 calls</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🔄 JSON-RPC Protocol</h4>
+                    <p>Standard MCP protocol for reliable communication</p>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>What Happens When You Ask "Show me available files"?</h3>
+                <div class="code-example">
+<span class="highlight">Step 1:</span> User types natural language request
+<span class="highlight">Step 2:</span> Cursor AI sends secure HTTP request with API key
+<span class="highlight">Step 3:</span> MCP Server authenticates and processes request
+<span class="highlight">Step 4:</span> Server queries AWS S3 for file list
+<span class="highlight">Step 5:</span> S3 returns list of available files
+<span class="highlight">Step 6:</span> Server creates table names and caches metadata
+<span class="highlight">Step 7:</span> Formatted results sent back to user
+<span class="highlight">Step 8:</span> User sees clean list of available data files
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Demo -->
+        <div class="slide" id="slide5">
+            <h2>🎯 Live Demo</h2>
+            
+            <h3>See It In Action</h3>
+            <p>Watch how simple questions turn into powerful insights.</p>
+
+            <div class="demo-section">
+                <h3>Example Queries & Results</h3>
+                
+                <div class="code-example"><span class="highlight">Query:</span> "Show me available data files"
+
+<span class="highlight">System Response:</span> Available files in s3://systango-invoice-data-lake/my_test_parquet_folder/:
+• fact_invoice.parquet
+• fact_monthly_summary.parquet  
+• dim_contact.parquet
+• fact_financial_performance.parquet
+• fact_anomaly.parquet
+• [20+ more files...]</div>
+
+                <div class="code-example"><span class="highlight">Query:</span> "What's the schema of fact_invoice.parquet?"
+
+<span class="highlight">System Response:</span> Schema for fact_invoice.parquet:
+• invoice_id: Int64
+• client_id: Int64  
+• amount: Float64
+• invoice_date: Date
+• status: Utf8
+• [15+ columns with sample data...]</div>
+
+                <div class="code-example"><span class="highlight">Query:</span> "Show me top 5 clients by total invoice amount"
+
+<span class="highlight">System Response:</span>
+<div class="query-result-table"><pre>┌───────────┬──────────────┬─────────────────┐
+│ client_id │ total_amount │ invoice_count   │
+├───────────┼──────────────┼─────────────────┤
+│ 1001      │ $125,000     │ 15              │
+│ 1002      │ $98,500      │ 12              │
+│ 1003      │ $87,200      │ 8               │
+│ 1004      │ $76,800      │ 10              │
+│ 1005      │ $65,400      │ 6               │
+└───────────┴──────────────┴─────────────────┘</pre></div></div>
+            </div>
+
+            <h3>Key Capabilities</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>🔍 Data Discovery</h4>
+                    <p>Automatically finds and catalogs all your data files</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📊 Schema Analysis</h4>
+                    <p>Intelligent understanding of data structure and types</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>⚡ Fast Queries</h4>
+                    <p>Complex analytics in sub-second response times</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🎯 Business Context</h4>
+                    <p>Pre-built models for common business scenarios</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        function showSlide(slideNumber) {
+            // Hide all slides
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Show selected slide
+            document.getElementById('slide' + slideNumber).classList.add('active');
+            
+            // Update navigation buttons
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+                 // Initialize Mermaid
+         mermaid.initialize({ 
+             startOnLoad: true,
+             theme: 'dark',
+             flowchart: {
+                 useMaxWidth: true,
+                 htmlLabels: true
+             }
+         });
+         
+                 // Auto-advance slides (optional)
+        let currentSlide = 1;
+        const totalSlides = 5;
+        
+        function autoAdvance() {
+            currentSlide = currentSlide % totalSlides + 1;
+            showSlide(currentSlide);
+        }
+        
+        // Image Modal Functions
+        function openImageModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            modal.style.display = 'block';
+            modalImg.src = img.src;
+        }
+        
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+        
+        // Uncomment the line below to enable auto-advance
+        // setInterval(autoAdvance, 10000); // 10 seconds per slide
+    </script>
+</body>
+</html>
