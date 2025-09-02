@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom MCP Server - S3 Data Query Solution</title>
+    <title>MCP Server - S3 Data Query Solution</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <style>
         * {
@@ -329,12 +329,64 @@
 
                  /* Sequence Diagram Styles */
          .sequence-diagram {
-             background: #2c3e50;
+             background: #f8f9fa;
              border-radius: 12px;
              padding: 30px;
              margin: 25px 0;
-             color: white;
+             color: #2c3e50;
              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         }
+
+         /* SVG Diagram Styles - Override SVG background */
+         .sequence-diagram svg {
+             background: #ffffff !important;
+             border-radius: 8px;
+             padding: 20px;
+             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+         }
+
+         /* Comprehensive text visibility rules */
+         .sequence-diagram svg text,
+         .sequence-diagram svg tspan,
+         .sequence-diagram text,
+         .sequence-diagram tspan {
+             fill: #000000 !important;
+             color: #000000 !important;
+             font-weight: 900 !important;
+             font-size: 16px !important;
+             font-family: Arial, sans-serif !important;
+             opacity: 1 !important;
+             visibility: visible !important;
+             display: block !important;
+         }
+
+         /* Make all SVG elements visible */
+         .sequence-diagram svg *,
+         .sequence-diagram * {
+             opacity: 1 !important;
+             visibility: visible !important;
+         }
+
+         /* Style SVG paths and lines */
+         .sequence-diagram svg path,
+         .sequence-diagram svg line {
+             stroke: #000000 !important;
+             stroke-width: 2 !important;
+             opacity: 1 !important;
+         }
+
+         /* Style SVG rectangles and shapes */
+         .sequence-diagram svg rect {
+             stroke: #333333 !important;
+             stroke-width: 2 !important;
+             fill-opacity: 0.9 !important;
+         }
+
+         /* Ensure img elements in sequence diagrams are visible */
+         .sequence-diagram img {
+             background: white !important;
+             border-radius: 8px;
+             padding: 10px;
          }
 
         /* Architecture Image Styles */
@@ -465,7 +517,7 @@
                     <p>In-memory processing with DuckDB delivers sub-second query results, even for complex analytics across multiple files.</p>
                 </div>
                 <div class="value-prop">
-                    <h4>🛡️ Security</h4>
+                    <h4>🛡️ Advanced Security</h4>
                     <p>API key authentication, HTTPS encryption, and secure AWS credential management ensure your data stays protected.</p>
                 </div>
                 <div class="value-prop">
@@ -523,16 +575,13 @@
                 </div>
                 <div class="benefit-card">
                     <h4>📈 Data Engine</h4>
-                    <p>High-performance DuckDB for in-memory analytics and Polars for data processing</p>
+                    <p>In-memory DB analytics and Polars for data processing</p>
                 </div>
                 <div class="benefit-card">
                     <h4>🔄 Smart Caching</h4>
                     <p>Intelligent caching of schemas and metadata for faster repeated queries</p>
                 </div>
-                <div class="benefit-card">
-                    <h4>🌍 Cloud Native</h4>
-                    <p>Deployed on Render.com with automatic scaling and 99.9% uptime</p>
-                </div>
+
             </div>
         </div>
 
@@ -540,8 +589,8 @@
         <div class="slide" id="slide3">
             <h2>🔄 How It Works</h2>
             
-            <h3>Simple 4-Step Process</h3>
-            <p>From data discovery to actionable insights in minutes, not hours.</p>
+            <h3>Process</h3>
+            <p>Our MCP server provides secure, API-key authenticated access to S3 data warehouses through a structured workflow. First, the system discovers and catalogs all data files in your configured S3 bucket, creating sanitized table names for SQL operations. Then, you can analyze file schemas and load specific datasets into DuckDB's in-memory database for lightning-fast querying. The system supports multiple file formats (CSV, JSON, Excel, Parquet) and allows schema overrides for custom data type handling. Finally, execute SQL queries directly against the loaded data using familiar syntax, with automatic file-name-to-table-name translation for seamless querying.</p>
 
             <div class="workflow">
                 <div class="workflow-step">
@@ -609,15 +658,15 @@
             <p>See the detailed technical process of how a simple user request flows through our secure system to deliver instant results.</p>
 
                          <div class="sequence-diagram">
-                 <h3 style="text-align: center; margin-bottom: 30px; color: #ecf0f1;">📁 List Available Files Flow</h3>
+                 <h3 style="text-align: center; margin-bottom: 30px; color: #000000;">📁 List Available Files Flow</h3>
                  
                  <div style="text-align: center; margin: 30px 0;">
-                     <img src="diagram.png" alt="List Available Files Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                     <img src="diagram.svg" alt="List Available Files Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                  </div>
                  
                  <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin: 20px 0;">
-                     <h4 style="color: #ecf0f1; margin-bottom: 15px;">🔍 Flow Summary:</h4>
-                     <ol style="color: #ecf0f1; line-height: 1.8; padding-left: 20px;">
+                     <h4 style="color: #000000; margin-bottom: 15px;">🔍 Flow Summary:</h4>
+                     <ol style="color: #000000; line-height: 1.8; padding-left: 20px;">
                          <li><strong>User Request:</strong> "Show me available files"</li>
                          <li><strong>Client Processing:</strong> Cursor AI sends secure HTTP request with API key</li>
                          <li><strong>Server Authentication:</strong> MCP Server verifies API key and processes request</li>
@@ -629,15 +678,15 @@
              </div>
 
              <div class="sequence-diagram" style="margin-top: 40px;">
-                 <h3 style="text-align: center; margin-bottom: 30px; color: #ecf0f1;">⚡ Query Execution Flow</h3>
+                 <h3 style="text-align: center; margin-bottom: 30px; color: #000000;">⚡ Query Execution Flow</h3>
                  
                                    <div style="text-align: center; margin: 30px 0;">
-                      <img src="query_diagram.png" alt="Query Execution Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                      <img src="query_diagram.svg" alt="Query Execution Flow Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                   </div>
                  
                  <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin: 20px 0;">
-                     <h4 style="color: #ecf0f1; margin-bottom: 15px;">⚡ Query Execution Summary:</h4>
-                     <ol style="color: #ecf0f1; line-height: 1.8; padding-left: 20px;">
+                     <h4 style="color: #000000; margin-bottom: 15px;">⚡ Query Execution Summary:</h4>
+                     <ol style="color: #000000; line-height: 1.8; padding-left: 20px;">
                          <li><strong>User Query:</strong> "Show me top 5 clients by revenue"</li>
                          <li><strong>Query Processing:</strong> Server converts to SQL and translates file names</li>
                          <li><strong>Database Execution:</strong> DuckDB runs query against in-memory data</li>
@@ -668,7 +717,7 @@
             </div>
 
             <div class="demo-section">
-                <h3>What Happens When You Ask "Show me available files"?</h3>
+                <h3>What Happens When You Ask "Show me top 5 clients by revenue"?</h3>
                 <div class="code-example">
 <span class="highlight">Step 1:</span> User types natural language request
 <span class="highlight">Step 2:</span> Cursor AI sends secure HTTP request with API key
@@ -676,8 +725,9 @@
 <span class="highlight">Step 4:</span> Server queries AWS S3 for file list
 <span class="highlight">Step 5:</span> S3 returns list of available files
 <span class="highlight">Step 6:</span> Server creates table names and caches metadata
-<span class="highlight">Step 7:</span> Formatted results sent back to user
-<span class="highlight">Step 8:</span> User sees clean list of available data files
+<span class="highlight">Step 7:</span> DuckDB executes optimized SQL query against in-memory data
+<span class="highlight">Step 8:</span> Formatted results sent back to user
+<span class="highlight">Step 9:</span> User sees top 5 clients with revenue data in clean table format
                 </div>
             </div>
         </div>
@@ -692,26 +742,6 @@
             <div class="demo-section">
                 <h3>Example Queries & Results</h3>
                 
-                <div class="code-example"><span class="highlight">Query:</span> "Show me available data files"
-
-<span class="highlight">System Response:</span> Available files in s3://systango-invoice-data-lake/my_test_parquet_folder/:
-• fact_invoice.parquet
-• fact_monthly_summary.parquet  
-• dim_contact.parquet
-• fact_financial_performance.parquet
-• fact_anomaly.parquet
-• [20+ more files...]</div>
-
-                <div class="code-example"><span class="highlight">Query:</span> "What's the schema of fact_invoice.parquet?"
-
-<span class="highlight">System Response:</span> Schema for fact_invoice.parquet:
-• invoice_id: Int64
-• client_id: Int64  
-• amount: Float64
-• invoice_date: Date
-• status: Utf8
-• [15+ columns with sample data...]</div>
-
                 <div class="code-example"><span class="highlight">Query:</span> "Show me top 5 clients by total invoice amount"
 
 <span class="highlight">System Response:</span>
